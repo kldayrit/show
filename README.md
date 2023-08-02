@@ -1,8 +1,6 @@
 # Show Data #
 
-TODO Describe the plugin shortly here.
-
-TODO Provide more detailed description here.
+'cheat detection' for moodle forums using crude implementation of sorensen dice coefficient and cosine similarity with tf-idf
 
 ## Installing via uploaded ZIP file ##
 
