@@ -104,15 +104,15 @@ class block_show extends block_base {
 
             // Show table of forum messages.
             $table = "<table> <tbody>";
-            $table .= "<tr>
+            $table .= "<tr class=table_header>
             <th>Course </th>
             <th>Forum </th>
             <th>Discussion </th>
             <th>Poster </th>";
             $table .= "<th>Subject </th>";
             $table .= "<th>Message </th>";
-            $table .= "<th>Similarity </th>";
-            $table .= "<th>Semantic </th>";
+            $table .= "<th>Similarity (?)</th>";
+            $table .= "<th>Semantic (?)</th>";
             $table .= "<th></th>";
             $table .= "</tr>";
 
@@ -123,6 +123,15 @@ class block_show extends block_base {
                 $forum = $forum[$id];
                 $discussionsql = "SELECT * FROM mdl_forum_discussions WHERE forum=$forum->id";
                 $discussion = $DB->get_records_sql($discussionsql);
+                foreach ($discussion as $d){
+                    $postsql = "SELECT * FROM mdl_forum_posts WHERE discussion=$d->id";
+                    $post = $DB->get_records_sql($postsql);
+                    foreach ($post as $p) {
+                        array_push($arr, $p->message);
+                    }
+                    $arr = array_map( 'strip_tags', $arr );
+                    $a = implode("||", $arr);
+                }
                 foreach ($discussion as $d) {
                     $postsql = "SELECT * FROM mdl_forum_posts WHERE discussion=$d->id";
                     $post = $DB->get_records_sql($postsql);
@@ -140,19 +149,22 @@ class block_show extends block_base {
                         $table .= "<td> $p->subject</td>";
                         $table .= "<td> $p->message  </td>";
                         $table .= "<td class=$index> -- </td>";
-                        $table .= "<td class=$index> -- </td>";
+                        $table .= "<td class='sem$index'> -- </td>";
                         $s = strip_tags($p->message);
+                        array_unshift($arr,$index);
+                        $a = implode("||", $arr);
+                        $table .= "<td><button class='check' value='$a' >CHECK</button></td>";
                         $table .= "</tr>";
+                        array_shift($arr);
 
-                        array_push($arr, $p->message);
                         $index++;
                     }
                 }
             } else {
-                foreach ($forum as $f) {
+                foreach ($forum as $f){
                     $discussionsql = "SELECT * FROM mdl_forum_discussions WHERE forum=$f->id";
                     $discussion = $DB->get_records_sql($discussionsql);
-                    foreach ($discussion as $d) {
+                    foreach ($discussion as $d){
                         $postsql = "SELECT * FROM mdl_forum_posts WHERE discussion=$d->id";
                         $post = $DB->get_records_sql($postsql);
                         foreach ($post as $p) {
@@ -160,6 +172,14 @@ class block_show extends block_base {
                         }
                         $arr = array_map( 'strip_tags', $arr );
                         $a = implode("||", $arr);
+                    }
+                }
+                foreach ($forum as $f) {
+                    $discussionsql = "SELECT * FROM mdl_forum_discussions WHERE forum=$f->id";
+                    $discussion = $DB->get_records_sql($discussionsql);
+                    foreach ($discussion as $d) {
+                        $postsql = "SELECT * FROM mdl_forum_posts WHERE discussion=$d->id";
+                        $post = $DB->get_records_sql($postsql);
                         foreach ($post as $p) {
                             $usersql = "SELECT * FROM mdl_user WHERE id=$p->userid ";
                             $user = $DB->get_record_sql($usersql);
@@ -178,7 +198,7 @@ class block_show extends block_base {
                             $s = strip_tags($p->message);
                             array_unshift($arr,$index);
                             $a = implode("||", $arr);
-                            $table .= "<td><button class='check' value='$a' >//</button></td>";
+                            $table .= "<td><button class='check' value='$a' >CHECK</button></td>";
                             $table .= "</tr>";
                             array_shift($arr);
 

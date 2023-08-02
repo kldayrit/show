@@ -226,7 +226,7 @@ define(['jquery'], function($) {
                 var compare = rat.ratings;
                 $('tr').css('background-color', '');
                 $('.' + selected).css('background-color', '');
-                $('#' + selected).closest('tr').css('background-color', 'rgb(168, 255, 168)');
+                $('#' + selected).closest('tr').css('background-color', 'rgb(219, 255, 219)');
                 for (let i = 0; i < textArray.length; i++) {
                     $('.' + i).html('--');
                 }
