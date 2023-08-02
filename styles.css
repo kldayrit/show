@@ -1,0 +1,13 @@
+table {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1;
+    font-size: smaller;
+    table-layout: auto;  
+}
+
+table td {
+    color: rgb(28, 143, 214);
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
