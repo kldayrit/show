@@ -42,7 +42,7 @@ define(['jquery'], function($) {
     const totalDocuments = textArray.length;
 
     for (const document of textArray) {
-      const words = new Set(tokenize(document));
+      const words = tokenize(document);
       for (const word of words) {
         documentFrequency[word] = (documentFrequency[word] || 0) + 1;
       }
@@ -218,7 +218,7 @@ define(['jquery'], function($) {
             $('.check').bind('click', function() {
                 var value = $(this).attr("value");
                 var textArray = value.split("||");
-                var selected = value[0];
+                var selected = textArray[0];
                 textArray.shift();
                 var rat = findBestMatch(textArray[selected], textArray.filter(function(x) {
                             return textArray.indexOf(x) != selected;
@@ -237,7 +237,7 @@ define(['jquery'], function($) {
                     } else {
                         $('.' + textArray.indexOf(item.target)).css('background-color', '');
                     }
-                    $('.' + textArray.indexOf(item.target)).html(Math.round(item.rating * 100 * 100) / 100 + '% similar');
+                    $('.' + textArray.indexOf(item.target)).html(textArray);
                 });
                 const idf = calculateIDF(textArray);
                 const documentA = textArray[selected];
