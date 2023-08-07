@@ -17,18 +17,17 @@
 /**
  * Block show is defined here.
  *
- * @package     block_show
- * @copyright   2023 Denzel Dayrit <kldayrit@up.edu.ph>
+ * @package     block_tulad
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class block_show extends block_base {
+class block_tulad extends block_base {
 
     /**
      * Initializes class member variables.
      */
     public function init() {
         // Needed by Moodle to differentiate between blocks.
-        $this->title = get_string('pluginname', 'block_show');
+        $this->title = get_string('pluginname', 'block_tulad');
     }
 
     /**
@@ -42,7 +41,8 @@ class block_show extends block_base {
 
         $this->page->requires->jquery();
         
-        $this->page->requires->js_call_amd('block_show/main','initialize');
+        $this->page->requires->js_call_amd('block_tulad/main','initialize');
+        
         if ($this->content !== null) {
             return $this->content;
         }
@@ -61,7 +61,7 @@ class block_show extends block_base {
             $this->content->text = $this->config->text;
         } else {
             // FORUM.
-            $text = '<h6>' . get_string('title', 'block_show') . '</h6>';
+            $text = '<h6>' . get_string('title', 'block_tulad') . '</h6>';
 
             // Course Filter.
             $coursesql = "SELECT * FROM mdl_course";
@@ -227,7 +227,7 @@ class block_show extends block_base {
 
         // Load user defined title and make sure it's never empty.
         if (empty($this->config->title)) {
-            $this->title = get_string('pluginname', 'block_show');
+            $this->title = get_string('pluginname', 'block_tulad');
         } else {
             $this->title = $this->config->title;
         }

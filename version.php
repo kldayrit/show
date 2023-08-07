@@ -17,14 +17,13 @@
 /**
  * Plugin version and other meta-data are defined here.
  *
- * @package     block_show
- * @copyright   2023 Denzel Dayrit <kldayrit@up.edu.ph>
+ * @package     block_tulad
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->component = 'block_show';
+$plugin->component = 'block_tulad';
 $plugin->release = '0.1.0';
 $plugin->version = 2023071700;
 $plugin->requires = 2022112800;

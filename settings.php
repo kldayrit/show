@@ -17,16 +17,15 @@
 /**
  * Plugin administration pages are defined here.
  *
- * @package     block_show
+ * @package     block_tulad
  * @category    admin
- * @copyright   2023 Denzel Dayrit <kldayrit@up.edu.ph>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage('block_show_settings', new lang_string('pluginname', 'block_show'));
+    $settings = new admin_settingpage('block_tulad_settings', new lang_string('pluginname', 'block_tulad'));
 
     // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedIf
     if ($ADMIN->fulltree) {

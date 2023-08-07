@@ -1,6 +1,6 @@
 # Show Data #
 
-'cheat detection' for moodle forums using crude implementation of sorensen dice coefficient and cosine similarity with tf-idf
+
 
 ## Installing via uploaded ZIP file ##
 
@@ -26,8 +26,6 @@ Alternatively, you can run
 to complete the installation from the command line.
 
 ## License ##
-
-2023 Denzel Dayrit <kldayrit@up.edu.ph>
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

@@ -17,13 +17,12 @@
 /**
  * Plugin strings are defined here.
  *
- * @package     block_show
+ * @package     block_tulad
  * @category    string
- * @copyright   2023 Denzel Dayrit <kldayrit@up.edu.ph>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Show Data';
+$string['pluginname'] = 'Tulad';
 $string['title'] = 'FORUM';

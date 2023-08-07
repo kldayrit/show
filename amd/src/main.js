@@ -237,7 +237,7 @@ define(['jquery'], function($) {
                     } else {
                         $('.' + textArray.indexOf(item.target)).css('background-color', '');
                     }
-                    $('.' + textArray.indexOf(item.target)).html(textArray);
+                    $('.' + textArray.indexOf(item.target)).html(Math.round(item.rating * 100 * 100) / 100 + '% similar');
                 });
                 const idf = calculateIDF(textArray);
                 const documentA = textArray[selected];
