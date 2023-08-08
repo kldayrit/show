@@ -258,6 +258,47 @@ define(['jquery'], function($) {
                     $('.sem' + j).html(Math.round(similarity * 100 * 100) / 100 + '% similar');
                 }
             });
+            t(".checka").bind("click", function () {
+              var n = t(this).attr("value").split("||"),
+                  o = n[0];
+              n.shift();
+              var c = a(
+                  n[o],
+                  n.filter(function (t) {
+                      return n.indexOf(t) != o;
+                  })
+              ).ratings;
+              t("tr").css("background-color", ""),
+                  t(".a" + o).css("background-color", ""),
+                  t("#a" + o)
+                      .closest("tr")
+                      .css("background-color", "rgb(219, 255, 219)");
+              for (let r = 0; r < n.length; r++) t(".a" + r).html("--");
+              c.forEach(function (r) {
+                  r.rating > 0.6 ? t(".a" + n.indexOf(r.target)).css("background-color", "rgb(255, 189, 182)") : t(".a" + n.indexOf(r.target)).css("background-color", ""),
+                      t(".a" + n.indexOf(r.target)).html(Math.round(100 * r.rating * 100) / 100 + "% similar");
+              });
+              const s = (function (t) {
+                      const n = {},
+                          o = t.length;
+                      for (const o of t) {
+                          const t = r(o);
+                          for (const r of t) n[r] = (n[r] || 0) + 1;
+                      }
+                      const c = {};
+                      for (const t in n) c[t] = Math.log(o / (n[t] + 1));
+                      return c;
+                  })(n),
+                  i = n[o];
+              for (let r = 0; r < n.length; r++) {
+                  if ((t(".asem" + r).css("background-color", ""), r == o)) {
+                      t(".asem" + r).html("--");
+                      continue;
+                  }
+                  const c = e(i, n[r], s);
+                  isNaN(c) && (c = 0), c > 0.6 && t(".asem" + r).css("background-color", "rgb(255, 189, 182)"), t(".asem" + r).html(Math.round(100 * c * 100) / 100 + "% similar");
+              }
+          });
         }
     };
 });
