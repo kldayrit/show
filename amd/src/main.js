@@ -225,26 +225,26 @@ define(['jquery'], function($) {
                             }));
                 var compare = rat.ratings;
                 $('tr').css('background-color', '');
-                $('.' + selected).css('background-color', '');
-                $('#' + selected).closest('tr').css('background-color', 'rgb(219, 255, 219)');
+                $('.a' + selected).css('background-color', '');
+                $('#a' + selected).closest('tr').css('background-color', 'rgb(219, 255, 219)');
                 for (let i = 0; i < textArray.length; i++) {
                     $('.' + i).html('--');
                 }
                 compare.forEach(function(item) {
                     if (item.rating > 0.6) {
-                        $('.' + textArray.indexOf(item.target)).css('background-color', 'rgb(255, 189, 182)');
+                        $('.a' + textArray.indexOf(item.target)).css('background-color', 'rgb(255, 189, 182)');
 
                     } else {
-                        $('.' + textArray.indexOf(item.target)).css('background-color', '');
+                        $('.a' + textArray.indexOf(item.target)).css('background-color', '');
                     }
-                    $('.' + textArray.indexOf(item.target)).html(Math.round(item.rating * 100 * 100) / 100 + '% similar');
+                    $('.a' + textArray.indexOf(item.target)).html(Math.round(item.rating * 100 * 100) / 100 + '% similar');
                 });
                 const idf = calculateIDF(textArray);
                 const documentA = textArray[selected];
                 for (let j = 0; j < textArray.length; j++) {
-                    $('.sem' + j).css('background-color', '');
+                    $('.asem' + j).css('background-color', '');
                     if (j == selected) {
-                        $('.sem' + j).html('--');
+                        $('.asem' + j).html('--');
                         continue;
                     }
                     const documentB = textArray[j];
@@ -253,11 +253,54 @@ define(['jquery'], function($) {
                         similarity = 0;
                     }
                     if (similarity > 0.6) {
-                        $('.sem' + j).css('background-color', 'rgb(255, 189, 182)');
+                        $('.asem' + j).css('background-color', 'rgb(255, 189, 182)');
                     }
-                    $('.sem' + j).html(Math.round(similarity * 100 * 100) / 100 + '% similar');
+                    $('.asem' + j).html(Math.round(similarity * 100 * 100) / 100 + '% similar');
                 }
             });
+            $('.checka').bind('click', function() {
+              var value = $(this).attr("value");
+              var textArray = value.split("||");
+              var selected = textArray[0];
+              textArray.shift();
+              var rat = findBestMatch(textArray[selected], textArray.filter(function(x) {
+                          return textArray.indexOf(x) != selected;
+                          }));
+              var compare = rat.ratings;
+              $('tr').css('background-color', '');
+              $('.a' + selected).css('background-color', '');
+              $('#a' + selected).closest('tr').css('background-color', 'rgb(219, 255, 219)');
+              for (let i = 0; i < textArray.length; i++) {
+                  $('.' + i).html('--');
+              }
+              compare.forEach(function(item) {
+                  if (item.rating > 0.6) {
+                      $('.a' + textArray.indexOf(item.target)).css('background-color', 'rgb(255, 189, 182)');
+
+                  } else {
+                      $('.a' + textArray.indexOf(item.target)).css('background-color', '');
+                  }
+                  $('.a' + textArray.indexOf(item.target)).html(Math.round(item.rating * 100 * 100) / 100 + '% similar');
+              });
+              const idf = calculateIDF(textArray);
+              const documentA = textArray[selected];
+              for (let j = 0; j < textArray.length; j++) {
+                  $('.asem' + j).css('background-color', '');
+                  if (j == selected) {
+                      $('.asem' + j).html('--');
+                      continue;
+                  }
+                  const documentB = textArray[j];
+                  const similarity = cosineSimilarity(documentA, documentB, idf);
+                  if (isNaN(similarity)) {
+                      similarity = 0;
+                  }
+                  if (similarity > 0.6) {
+                      $('.asem' + j).css('background-color', 'rgb(255, 189, 182)');
+                  }
+                  $('.asem' + j).html(Math.round(similarity * 100 * 100) / 100 + '% similar');
+              }
+          });
         }
     };
 });

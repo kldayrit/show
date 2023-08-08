@@ -40,9 +40,9 @@ class block_tulad extends block_base {
         global $DB, $USER, $CFG;
 
         $this->page->requires->jquery();
-        
-        $this->page->requires->js_call_amd('block_tulad/main','initialize');
-        
+
+        $this->page->requires->js_call_amd('block_tulad/main', 'initialize');
+
         if ($this->content !== null) {
             return $this->content;
         }
@@ -123,7 +123,7 @@ class block_tulad extends block_base {
                 $forum = $forum[$id];
                 $discussionsql = "SELECT * FROM mdl_forum_discussions WHERE forum=$forum->id";
                 $discussion = $DB->get_records_sql($discussionsql);
-                foreach ($discussion as $d){
+                foreach ($discussion as $d) {
                     $postsql = "SELECT * FROM mdl_forum_posts WHERE discussion=$d->id";
                     $post = $DB->get_records_sql($postsql);
                     foreach ($post as $p) {
@@ -151,7 +151,7 @@ class block_tulad extends block_base {
                         $table .= "<td class=$index> -- </td>";
                         $table .= "<td class='sem$index'> -- </td>";
                         $s = strip_tags($p->message);
-                        array_unshift($arr,$index);
+                        array_unshift($arr, $index);
                         $a = implode("||", $arr);
                         $table .= "<td><button class='check' value='$a' >CHECK</button></td>";
                         $table .= "</tr>";
@@ -161,10 +161,10 @@ class block_tulad extends block_base {
                     }
                 }
             } else {
-                foreach ($forum as $f){
+                foreach ($forum as $f) {
                     $discussionsql = "SELECT * FROM mdl_forum_discussions WHERE forum=$f->id";
                     $discussion = $DB->get_records_sql($discussionsql);
-                    foreach ($discussion as $d){
+                    foreach ($discussion as $d) {
                         $postsql = "SELECT * FROM mdl_forum_posts WHERE discussion=$d->id";
                         $post = $DB->get_records_sql($postsql);
                         foreach ($post as $p) {
@@ -196,13 +196,11 @@ class block_tulad extends block_base {
                             $table .= "<td class=$index> -- </td>";
                             $table .= "<td class='sem$index'> -- </td>";
                             $s = strip_tags($p->message);
-                            array_unshift($arr,$index);
+                            array_unshift($arr, $index);
                             $a = implode("||", $arr);
                             $table .= "<td><button class='check' value='$a' >CHECK</button></td>";
                             $table .= "</tr>";
                             array_shift($arr);
-
-                            
                             $index++;
                         }
                     }
@@ -211,7 +209,125 @@ class block_tulad extends block_base {
             $table .= "</tbody> </table>";
 
             $text .= $table;
-            
+
+            $assignsql = "SELECT * FROM mdl_assign";
+            if (isset($_POST['coursefilter']) && $_POST['filterByCourse'] != '-1') {
+                $id = $_POST['filterByCourse'];
+                $assignsql = "SELECT * FROM mdl_assign where course=$id";
+            }
+            $assign = $DB->get_records_sql($assignsql);
+
+            $assignfilter = '<br><br>
+                            <h6> ASSIGNMENTS </h6>
+                            <form method="post">
+                                <span>Assignment: </span>
+                                <select name="filterByAssign">
+                                    <option value="-1"> ... </option>';
+            foreach ($assign as $a) {
+                $assignfilter .= "  <option value='$a->id'> $a->id $a->name </option>";
+            }
+            $assignfilter .= '  </select>
+                                <input type="submit" name="assignfilter">
+                            </form>';
+            $text .= $assignfilter;
+
+            $assigntable = '<table>
+                                <thead>
+                                    <tr class="table_header">
+                                        <th>Course</th>
+                                        <th>Assignment</th>
+                                        <th>Author</th>
+                                        <th>Online Text</th>
+                                        <th>Similarity</th>
+                                        <th>Semantic</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+
+            $assignarr = array();
+            $assignindex = 0;
+            if (isset($_POST['assignfilter']) && $_POST['filterByAssign'] != '-1') {
+                $assignid = $_POST['filterByAssign'];
+                $assignselect = $assign[$assignid];
+                $assigntextsubsql = "SELECT * FROM mdl_assignsubmission_onlinetext o
+                                     JOIN mdl_assign_submission a ON a.id = o.submission
+                                     WHERE o.assignment=$assignselect->id";
+                $submissions = $DB->get_records_sql($assigntextsubsql);
+                foreach ($submissions as $s) {
+                    array_push($assignarr, $s->onlinetext);
+                }
+                $assignarr = array_map('strip_tags', $assignarr);
+                $assignlist = implode("||", $assignarr);
+
+                foreach ($submissions as $s) {
+                    $usersql = "SELECT * FROM mdl_user WHERE id=$p->userid ";
+                    $user = $DB->get_record_sql($usersql);
+                    $coursesql = "SELECT * FROM mdl_course where id=$assignselect->course";
+                    $course = $DB->get_record_sql($coursesql);
+
+                    $assigntable .= "<tr id = 'a$assignindex'>
+                                        <td> $course->fullname </td>
+                                        <td> $assignselect->name </td>
+                                        <td> $user->firstname $user->lastname </td>
+                                        <td> $s->onlinetext </td>
+                                        <td class='a$assignindex'> -- </td>
+                                        <td class='asem$assignindex'> -- </td>";
+                    $stripped = strip_tags($s->onlinetext);
+                    array_unshift($assignarr, $assignindex);
+                    $assigntext = implode("||", $assignarr);
+                    $assigntable .= "   <td> <button class='checka' value='$assigntext'> CHECK </button> </td>
+                                    </tr>";
+                    array_shift($assignarr);
+
+                    $assignindex++;
+                }
+            } else {
+                foreach ($assign as $a) {
+                    $assigntextsubsql = "SELECT * FROM mdl_assignsubmission_onlinetext o
+                                         JOIN mdl_assign_submission a ON a.id = o.submission
+                                         WHERE o.assignment=$a->id";
+                    $submissions = $DB->get_records_sql($assigntextsubsql);
+                    foreach ($submissions as $s) {
+                        array_push($assignarr, $s->onlinetext);
+                    }
+                    $assignarr = array_map("strip_tags", $assignarr);
+                    $assignlist = implode("||", $assignarr);
+                }
+
+                foreach ($assign as $a) {
+                    $assigntextsubsql = "SELECT * FROM mdl_assignsubmission_onlinetext o
+                                         JOIN mdl_assign_submission a ON a.id = o.submission
+                                         WHERE o.assignment=$a->id";
+                    $submissions = $DB->get_records_sql($assigntextsubsql);
+                    foreach ($submissions as $s) {
+                        $usersql = "SELECT * FROM mdl_user WHERE id=$p->userid ";
+                        $user = $DB->get_record_sql($usersql);
+                        $coursesql = "SELECT * FROM mdl_course where id=$a->course";
+                        $course = $DB->get_record_sql($coursesql);
+
+                        $assigntable .= "<tr id = 'a$assignindex'>
+                                            <td> $course->fullname </td>
+                                            <td> $a->name </td>
+                                            <td> $user->firstname $user->lastname </td>
+                                            <td> $s->onlinetext </td>
+                                            <td class='a$assignindex'> -- </td>
+                                            <td class='asem$assignindex'> -- </td>";
+                        $stripped = strip_tags($s->onlinetext);
+                        array_unshift($assignarr, $assignindex);
+                        $assigntext = implode("||", $assignarr);
+                        $assigntable .= "   <td> <button class='checka' value='$assigntext'> CHECK </button> </td>
+                                        </tr>";
+                        array_shift($assignarr);
+
+                        $assignindex++;
+                    }
+                }
+            }
+            $assigntable .= "   </tbody>
+                            </table>";
+            $text .= $assigntable;
+
             $this->content->text = $text;
         }
 
